@@ -33,7 +33,7 @@ def setup(
     database: str = "",
     token: str = "",
     client: Union[OpenAI, AsyncOpenAI, None] = None,
-    options: Options = {},
+    options: Options = None,
 ):
     """
     patch openai functions automatically.
@@ -63,20 +63,21 @@ def setup(
         _RetryPatcher(collector=collector, client=client),
     ]
 
-    if options.get("file", False):
-        patchers.append(_FilePatcher(collector=collector, client=client))
+    if options:
+        if options.get("file", False):
+            patchers.append(_FilePatcher(collector=collector, client=client))
 
-    if options.get("fine_tuning", False):
-        patchers.append(_FineTuningPatcher(collector=collector, client=client))
+        if options.get("fine_tuning", False):
+            patchers.append(_FineTuningPatcher(collector=collector, client=client))
 
-    if options.get("model", False):
-        patchers.append(_ModelPatcher(collector=collector, client=client))
+        if options.get("model", False):
+            patchers.append(_ModelPatcher(collector=collector, client=client))
 
-    if options.get("embedding", False):
-        patchers.append(_EmbeddingPatcher(collector=collector, client=client))
+        if options.get("embedding", False):
+            patchers.append(_EmbeddingPatcher(collector=collector, client=client))
 
-    if options.get("moderation", False):
-        patchers.append(_ModerationPatcher(collector=collector, client=client))
+        if options.get("moderation", False):
+            patchers.append(_ModerationPatcher(collector=collector, client=client))
 
     for patcher in patchers:
         patcher.patch()
