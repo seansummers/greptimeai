@@ -186,9 +186,10 @@ class _SpanTable:
         - the key may not be the OTLP span_id, maybe it is UUID format from langchain.
           The key is to help find the span_context.
         """
-        context_list = self._spans.get(key, [])
-        context_list.append(context)
-        self._spans[key] = context_list
+        if key in self._spans:
+            self._spans[key].append(context)
+        else:
+            self._spans[key] = [context]
 
     def get_span_context(
         self, key: Optional[str], span_name: Optional[str] = None
